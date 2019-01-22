@@ -15,6 +15,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 def do_test(i, j):
     ttest = stats.ttest_ind(i, j)
+    pearsonr = stats.pearsonr(i, j)
     cs = cosine_similarity(np.array(i).reshape(1, -1), np.array(j).reshape(1, -1)).tolist()[0][0]
 
     rmse = math.sqrt(mean_squared_error(i, j))
@@ -24,7 +25,7 @@ def do_test(i, j):
     rmse_norm = math.sqrt(mean_squared_error(i_norm, j_norm))
     mae_norm = mean_absolute_error(i_norm, j_norm)
 
-    return ttest, cs, rmse, rmse_norm, mae, mae_norm
+    return ttest, pearsonr, cs, rmse, rmse_norm, mae, mae_norm
 
 
 def get_basic_info(i, j):
@@ -56,7 +57,7 @@ def plot_sets(i, j, title):
     plt.show()
 
 
-def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, cs, rmse, rmse_norm, mae, mae_norm, s='all'):
+def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, pearsonr, cs, rmse, rmse_norm, mae, mae_norm, s='all'):
     title = f"Data set size ({s}): {str(size)}"
     print(title)
     print("=" * len(title))
@@ -66,8 +67,10 @@ def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, cs, rmse
     print(f"mean  \t{mean_val[0]:.4f}\t{mean_val[1]:.4f}")
     print(f"median\t{median_val[0]:.4f}\t{median_val[1]:.4f}\n")
 
-    p = '< .01' if ttest.pvalue < 0.01 else f"{ttest.pvalue:.4f}"
-    print(f"T-test ({s}):\n\t- statistic: {ttest.statistic:.4f}\n\t- p-value {p}\n")
+    ttest_p = '< .01' if ttest.pvalue < 0.01 else f"{ttest.pvalue:.4f}"
+    print(f"T-test ({s}):\n\t- statistic: {ttest.statistic:.4f}\n\t- p-value {ttest_p}\n")
+    pearson_p = '< .01' if pearsonr[1] < 0.01 else f"{pearsonr[1]:.4f}"
+    print(f"Pearson r ({s}):\n\t- correlation: {pearsonr[0]:.4f}\n\t- p-value {pearson_p}\n")
     print(f"Cosine similarity ({s}): {cs:.4f}")
     print(f"Root mean square error ({s}): {rmse:.4f} ({rmse_norm:.2f}%)")
     print(f"Mean absolute error ({s}): {mae:.4f} ({mae_norm:.2f}%)\n")
@@ -119,9 +122,9 @@ def main(path_i, path_j):
 
     plot_sets(set_i, set_j, 'with outliers')
     min_all, max_all, mean_all, median_all = get_basic_info(set_i, set_j)
-    ttest_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm = do_test(set_i, set_j)
+    ttest_all, pearsonr_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm = do_test(set_i, set_j)
 
-    print_set_info(len(set_i), min_all, max_all, mean_all, median_all, ttest_all,
+    print_set_info(len(set_i), min_all, max_all, mean_all, median_all, ttest_all, pearsonr_all,
                    cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm)
 
     # NO OUTLIERS
@@ -129,9 +132,9 @@ def main(path_i, path_j):
 
     plot_sets(set_i_no_o, set_j_no_o, 'without outliers')
     min_no_o, max_no_o, mean_no_o, median_no_o = get_basic_info(set_i_no_o, set_j_no_o)
-    ttest_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm = do_test(set_i_no_o, set_j_no_o)
+    ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm = do_test(set_i_no_o, set_j_no_o)
 
-    print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, ttest_no_o,
+    print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, ttest_no_o, pearsonr_no_o,
                    cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm, s='without outliers')
 
 
