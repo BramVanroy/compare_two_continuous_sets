@@ -41,8 +41,8 @@ def get_basic_info(i, j):
 def get_norm_sets(i, j):
     norm_i, norm_j = [], []
     for i_i, j_i in zip(i, j):
-        norm_j.append(j_i/i_i)
-        norm_i.append(1)
+        norm_j.append(j_i*100/i_i)
+        norm_i.append(100)
 
     return norm_i, norm_j
 
