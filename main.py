@@ -3,12 +3,12 @@ import argparse
 from statistics import mean, median
 import math
 
-import seaborn as sns
 import matplotlib.pyplot as plt
-from scipy import stats
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+from scipy import stats
+import seaborn as sns
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics.pairwise import cosine_similarity
 
 """ Calculates metrics between two continuous datasets. """
 

@@ -5,10 +5,7 @@ name = "pypi"
 
 [packages]
 matplotlib = "*"
+numpy = "*"
+scipy = "*"
 seaborn = "*"
 sklearn = "*"
-
-[dev-packages]
-
-[requires]
-python_version = "3.7"

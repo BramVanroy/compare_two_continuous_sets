@@ -1,12 +1,10 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c8bda5c12b4d84f0a049bfe45ed05890f9c7eb3fa580581266fe32b9aefa6a16"
+            "sha256": "7d115e3fd381f061c3a4f4ab5675787670d53bfc112d4288f118cbb270485770"
         },
         "pipfile-spec": 6,
-        "requires": {
-            "python_version": "3.7"
-        },
+        "requires": {},
         "sources": [
             {
                 "name": "pypi",
@@ -101,6 +99,7 @@
                 "sha256:f1232f98a6bbd6d1678249f94028bccc541bbc306aa5c4e1471a881b0e5a3409",
                 "sha256:fea682f6ddc09517df0e6d5caad9613c6d91a42232aeb082df67e4d205de19cc"
             ],
+            "index": "pypi",
             "version": "==1.16.0"
         },
         "pandas": {
@@ -213,6 +212,7 @@
                 "sha256:fb36064047e6bf87b6320a9b6eb7f525ef6863c7a4aef1a84a4bbfb043612617",
                 "sha256:fc1a19d95649439dbd50baca676bceb29bbfcd600aed2c5bd71d9bad82a87cfe"
             ],
+            "index": "pypi",
             "version": "==1.2.0"
         },
         "seaborn": {
