@@ -69,7 +69,7 @@ def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, cs, rmse
     p = '< .01' if ttest.pvalue < 0.01 else f"{ttest.pvalue:.4f}"
     print(f"T-test ({s}):\n\t- statistic: {ttest.statistic:.4f}\n\t- p-value {p}\n")
     print(f"Cosine similarity ({s}): {cs:.4f}")
-    print(f"Mean squared error ({s}): {rmse:.4f} ({rmse_norm:.2f}%)")
+    print(f"Root mean square error ({s}): {rmse:.4f} ({rmse_norm:.2f}%)")
     print(f"Mean absolute error ({s}): {mae:.4f} ({mae_norm:.2f}%)\n")
 
 
