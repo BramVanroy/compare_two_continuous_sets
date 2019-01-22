@@ -33,8 +33,9 @@ def get_basic_info(i, j):
     max_vals = max(i), max(j)
     mean_vals = mean(i), mean(j)
     median_vals = median(i), median(j)
+    std_vals = np.std(i), np.std(j)
 
-    return min_vals, max_vals, mean_vals, median_vals
+    return min_vals, max_vals, mean_vals, median_vals, std_vals
 
 
 def get_norm_sets(i, j):
@@ -57,7 +58,7 @@ def plot_sets(i, j, title):
     plt.show()
 
 
-def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, pearsonr, cs, rmse, rmse_norm, mae, mae_norm, s='all'):
+def print_set_info(size, min_val, max_val, mean_val, median_val, std_val, ttest, pearsonr, cs, rmse, rmse_norm, mae, mae_norm, s='all'):
     title = f"Data set size ({s}): {str(size)}"
     print(title)
     print("=" * len(title))
@@ -65,7 +66,8 @@ def print_set_info(size, min_val, max_val, mean_val, median_val, ttest, pearsonr
     print(f"min   \t{min_val[0]:.4f}\t{min_val[1]:.4f}")
     print(f"max   \t{max_val[0]:.4f}\t{max_val[1]:.4f}")
     print(f"mean  \t{mean_val[0]:.4f}\t{mean_val[1]:.4f}")
-    print(f"median\t{median_val[0]:.4f}\t{median_val[1]:.4f}\n")
+    print(f"median\t{median_val[0]:.4f}\t{median_val[1]:.4f}")
+    print(f"std   \t{std_val[0]:.4f}\t{std_val[1]:.4f}\n")
 
     ttest_p = '< .01' if ttest.pvalue < 0.01 else f"{ttest.pvalue:.4f}"
     print(f"T-test ({s}):\n\t- statistic: {ttest.statistic:.4f}\n\t- p-value {ttest_p}\n")
@@ -121,21 +123,21 @@ def main(path_i, path_j):
         raise ValueError('Sets must be the same size.')
 
     plot_sets(set_i, set_j, 'with outliers')
-    min_all, max_all, mean_all, median_all = get_basic_info(set_i, set_j)
+    min_all, max_all, mean_all, median_all, std_all = get_basic_info(set_i, set_j)
     ttest_all, pearsonr_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm = do_test(set_i, set_j)
 
-    print_set_info(len(set_i), min_all, max_all, mean_all, median_all, ttest_all, pearsonr_all,
-                   cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm)
+    print_set_info(len(set_i), min_all, max_all, mean_all, median_all, std_all,
+                   ttest_all, pearsonr_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm)
 
     # NO OUTLIERS
     set_i_no_o, set_j_no_o = reject_outliers_p(set_i, set_j)
 
     plot_sets(set_i_no_o, set_j_no_o, 'without outliers')
-    min_no_o, max_no_o, mean_no_o, median_no_o = get_basic_info(set_i_no_o, set_j_no_o)
+    min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o = get_basic_info(set_i_no_o, set_j_no_o)
     ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm = do_test(set_i_no_o, set_j_no_o)
 
-    print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, ttest_no_o, pearsonr_no_o,
-                   cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm, s='without outliers')
+    print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o,
+                   ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm, s='without outliers')
 
 
 if __name__ == '__main__':
