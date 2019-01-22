@@ -116,7 +116,7 @@ def reject_outliers_p(i, j, p=0.05):
     return i_no_outliers, j_no_outliers
 
 
-def main(path_i, path_j):
+def main(path_i, path_j, outlier_percentage):
     set_i, set_j = read_data(path_i, path_j)
 
     if len(set_i) != len(set_j):
@@ -130,7 +130,7 @@ def main(path_i, path_j):
                    ttest_all, pearsonr_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm)
 
     # NO OUTLIERS
-    set_i_no_o, set_j_no_o = reject_outliers_p(set_i, set_j)
+    set_i_no_o, set_j_no_o = reject_outliers_p(set_i, set_j, p=outlier_percentage)
 
     plot_sets(set_i_no_o, set_j_no_o, 'without outliers')
     min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o = get_basic_info(set_i_no_o, set_j_no_o)
@@ -150,9 +150,12 @@ if __name__ == '__main__':
     parser.add_argument('-j', '--input_dir_j', required=True,
                         help="Path to input dir i. Must contain files with one number per file.")
 
+    parser.add_argument('-p', '--outlier_percentage', default=0.05,
+                        help="Remove some percentage of the highest and lowest data to avoid outliers.")
+
     args = parser.parse_args()
 
     d_i = Path(args.input_dir_i).resolve()
     d_j = Path(args.input_dir_j).resolve()
 
-    main(d_i, d_j)
+    main(d_i, d_j, float(args.outlier_percentage))
