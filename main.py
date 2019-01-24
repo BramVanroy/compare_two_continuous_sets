@@ -41,6 +41,8 @@ def get_basic_info(i, j):
 def get_norm_sets(i, j):
     norm_i, norm_j = [], []
     for i_i, j_i in zip(i, j):
+        i_i += 1
+        j_i += 1
         norm_j.append(j_i*100/i_i)
         norm_i.append(100)
 
@@ -53,7 +55,19 @@ def plot_sets(i, j, title):
     plt.title(title)
     plt.legend()
 
-    filename = title.replace(' ', '-') + '.png'
+    filename = title.replace(' ', '-') + '-dist.png'
+    plt.savefig(filename)
+    plt.show()
+
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    sns.boxplot(i, orient='v', ax=ax1)
+    sns.boxplot(j, orient='v', ax=ax2)
+
+    ax1.set_xlabel = 'Set i'
+    ax2.set_xlabel = 'Set j'
+    plt.title(title)
+
+    filename = title.replace(' ', '-') + '-boxplot.png'
     plt.savefig(filename)
     plt.show()
 
@@ -84,10 +98,39 @@ def read_data(dir_i, dir_j):
     for d, s in zip([dir_i, dir_j], [i_set, j_set]):
         for pfin in sorted(list(d.glob('*.cross'))):
             with open(str(pfin), 'r', encoding='utf-8') as fhin:
-                cross = float(fhin.readline().strip())
+                cross = fhin.readline().strip()
+
+                if cross != 'None' and float(cross) > 50:
+                    print(pfin)
+
                 s.append(cross)
 
+    initial_size = len(i_set)
+
+    i_set, j_set = reject_none(i_set, j_set)
+
+    i_set, j_set = list(map(float, i_set)), list(map(float, j_set))
+
+
+    print(f"Initial dataset: {initial_size}. Without None values: {len(i_set)}")
+
     return i_set, j_set
+
+
+def reject_none(i, j):
+    if not isinstance(i, np.ndarray):
+        i = np.array(i)
+    if not isinstance(j, np.ndarray):
+        j = np.array(j)
+
+    i_none_idxs = set(np.nonzero(i == 'None')[0].tolist())
+    j_none_idxs = set(np.nonzero(j == 'None')[0].tolist())
+    none_idxs = i_none_idxs.union(j_none_idxs)
+
+    i_no_none = np.delete(i, list(none_idxs))
+    j_no_none = np.delete(j, list(none_idxs))
+
+    return i_no_none, j_no_none
 
 
 def reject_outliers_p(i, j, p=0.05):
@@ -110,8 +153,8 @@ def reject_outliers_p(i, j, p=0.05):
 
     no_outliers_idxs = i_idxs.union(j_idxs)
 
-    i_no_outliers = [i_i for idx, i_i in enumerate(i) if idx not in no_outliers_idxs]
-    j_no_outliers = [j_i for idx, j_i in enumerate(j) if idx not in no_outliers_idxs]
+    i_no_outliers = np.delete(i, list(no_outliers_idxs))
+    j_no_outliers = np.delete(j, list(no_outliers_idxs))
 
     return i_no_outliers, j_no_outliers
 

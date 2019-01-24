@@ -1,6 +1,7 @@
 # data
 data/
 *.png
+*-*.txt
 
 # .idea (JetBrains)
 .idea/
