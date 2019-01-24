@@ -99,10 +99,6 @@ def read_data(dir_i, dir_j):
         for pfin in sorted(list(d.glob('*.cross'))):
             with open(str(pfin), 'r', encoding='utf-8') as fhin:
                 cross = fhin.readline().strip()
-
-                if cross != 'None' and float(cross) > 50:
-                    print(pfin)
-
                 s.append(cross)
 
     initial_size = len(i_set)
