@@ -49,11 +49,13 @@ def get_norm_sets(i, j):
     return norm_i, norm_j
 
 
-def plot_sets(i, j, title):
-    sns.distplot(i, label='Set i')
-    sns.distplot(j, label='Set j')
-    plt.title(title)
+def plot_sets(i, j, title=None):
+    sns.distplot(i, label='Real values')
+    sns.distplot(j, label='Predicted values')
     plt.legend()
+    plt.title('RFR')
+    plt.ylim(0, None)
+    plt.xlim(0, None)
 
     filename = title.replace(' ', '-') + '-dist.png'
     plt.savefig(filename)
@@ -65,7 +67,8 @@ def plot_sets(i, j, title):
 
     ax1.set_xlabel = 'Set i'
     ax2.set_xlabel = 'Set j'
-    plt.title(title)
+    plt.ylim(0, None)
+    plt.xlim(0, None)
 
     filename = title.replace(' ', '-') + '-boxplot.png'
     plt.savefig(filename)
@@ -106,7 +109,6 @@ def read_data(dir_i, dir_j):
     i_set, j_set = reject_none(i_set, j_set)
 
     i_set, j_set = list(map(float, i_set)), list(map(float, j_set))
-
 
     print(f"Initial dataset: {initial_size}. Without None values: {len(i_set)}")
 
@@ -168,15 +170,16 @@ def main(path_i, path_j, outlier_percentage):
     print_set_info(len(set_i), min_all, max_all, mean_all, median_all, std_all,
                    ttest_all, pearsonr_all, cs_all, rmse_all, rmse_all_norm, mae_all, mae_all_norm)
 
-    # NO OUTLIERS
-    set_i_no_o, set_j_no_o = reject_outliers_p(set_i, set_j, p=outlier_percentage)
+    if outlier_percentage:
+        # NO OUTLIERS
+        set_i_no_o, set_j_no_o = reject_outliers_p(set_i, set_j, p=outlier_percentage)
 
-    plot_sets(set_i_no_o, set_j_no_o, 'without outliers')
-    min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o = get_basic_info(set_i_no_o, set_j_no_o)
-    ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm = do_test(set_i_no_o, set_j_no_o)
+        plot_sets(set_i_no_o, set_j_no_o, 'without outliers')
+        min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o = get_basic_info(set_i_no_o, set_j_no_o)
+        ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm = do_test(set_i_no_o, set_j_no_o)
 
-    print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o,
-                   ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm, s='without outliers')
+        print_set_info(len(set_i_no_o), min_no_o, max_no_o, mean_no_o, median_no_o, std_no_o,
+                       ttest_no_o, pearsonr_no_o, cs_no_o, rmse_no_o, rmse_no_o_norm, mae_no_o, mae_no_o_norm, s='without outliers')
 
 
 if __name__ == '__main__':
@@ -188,13 +191,12 @@ if __name__ == '__main__':
                         help="Path to input dir i. Must contain files with one number per file.")
     parser.add_argument('-j', '--input_dir_j', required=True,
                         help="Path to input dir i. Must contain files with one number per file.")
-
-    parser.add_argument('-p', '--outlier_percentage', default=0.05,
+    parser.add_argument('--remove_outliers', default=False,
                         help="Remove some percentage of the highest and lowest data to avoid outliers.")
 
     args = parser.parse_args()
 
     d_i = Path(args.input_dir_i).resolve()
     d_j = Path(args.input_dir_j).resolve()
-
-    main(d_i, d_j, float(args.outlier_percentage))
+    outliers_percentage = float(args.remove_outliers) if args.remove_outliers else False
+    main(d_i, d_j, outliers_percentage)
