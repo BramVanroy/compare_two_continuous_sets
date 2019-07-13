@@ -35,14 +35,29 @@ def get_basic_info(set_a, set_b):
 
 
 def plot_sets(set_a, set_b, title=None):
+    # Scatter plot
+    # Dist plot
+    ax = sns.scatterplot(set_a, set_b)
+    print(ax.get_xlim())
+    plt.plot([0, ax.get_ylim()[1]], [0, ax.get_ylim()[1]], color='black', linewidth=2)
+    ax.set_xlabel('Real values')
+    ax.set_ylabel('Predicted values')
+    if title is not None:
+        plt.title(title)
+
+    plt.ylim(ax.get_ylim()[0], ax.get_xlim()[1])
+
+    fname_scatter = title.replace(' ', '-') + '-scatter.png' if title is not None else 'scatter.png'
+
+    plt.savefig(fname_scatter)
+    plt.show()
+
     # Dist plot
     sns.distplot(set_a, label='Real values')
     sns.distplot(set_b, label='Predicted values')
     plt.legend()
     if title is not None:
         plt.title(title)
-    plt.ylim(0, None)
-    plt.xlim(0, None)
 
     fname_dist = title.replace(' ', '-') + '-dist.png' if title is not None else 'dist.png'
 
@@ -58,8 +73,6 @@ def plot_sets(set_a, set_b, title=None):
 
     ax1.set_xlabel = 'Set a'
     ax2.set_xlabel = 'Set b'
-    plt.ylim(0, None)
-    plt.xlim(0, None)
 
     fname_box = title.replace(' ', '-') + '-boxplot.png' if title is not None else 'boxplot.png'
     plt.savefig(fname_box)
@@ -121,8 +134,15 @@ def reject_none(set_a, set_b):
     none_idxs = np.union1d(np.nonzero(set_a == 'None'),
                            np.nonzero(set_b == 'None'))
     # Delete all 'None' indices from both arrays and cast to float
-    set_a_no_none = np.delete(set_a, none_idxs).astype(float)
-    set_b_no_none = np.delete(set_b, none_idxs).astype(float)
+    try:
+        set_a_no_none = np.delete(set_a, none_idxs).astype(float)
+    except ValueError as e:
+        raise ValueError(f"Error in set a: {e}")
+
+    try:
+        set_b_no_none = np.delete(set_b, none_idxs).astype(float)
+    except ValueError as e:
+        raise ValueError(f"Error in set b: {e}")
 
     return set_a_no_none, set_b_no_none
 
@@ -148,8 +168,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description='Compare two datasets with continuous data. Reads data from one'
                                                  ' datapoint per file.')
-    parser.add_argument('file_a', help='Path to the first input file.')
-    parser.add_argument('file_b', help='Path to the second input file.')
+    parser.add_argument('file_a', help='Path to the first input file (real values).')
+    parser.add_argument('file_b', help='Path to the second input file (predicted values).')
 
     args = parser.parse_args()
 
